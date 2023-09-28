@@ -112,7 +112,7 @@ void MallaInd::visualizarGL( )
 
    if (tieneColor) {
        cauce->pushColor();
-       cauce->fijarColor(leerColor);
+       cauce->fijarColor(leerColor());
    }
 
    // COMPLETAR: práctica 1: crear el descriptor de VAO, si no está creado
@@ -125,18 +125,33 @@ void MallaInd::visualizarGL( )
    //  Si el VAO ya está creado, (dvao no nulo), no hay que hacer nada.
    //
 
+   //No tengo ni idea de qué hacer aquí xd
+
    if (dvao == nullptr) {
+       dvao = new DescrVAO(numero_atributos_cauce,new DescrVBOAtribs(ind_atrib_posiciones,);
        
+       dvao->agregar(new DescrVBOInds());
+
+       if (> 0)
+           dvao->agregar(new DescrVBOAtribs(ind_atrib_colores,));
+       if (> 0)
+           dvao->agregar(new DescrVBOAtribs(ind_atrib_normales,));
+       if (> 0)
+           dvao->agregar(new DescrVBOAtribs(ind_atrib_coord_text,));
    }
 
    // COMPLETAR: práctica 1: visualizar el VAO usando el método 'draw' de 'DescrVAO'
 
+   dvao->draw();
 
    // COMPLETAR: práctica 1: restaurar color anterior del cauce 
    //
    // Si el objeto tiene un color asignado (se comprueba con 'tieneColor')
    //    - hacer 'pop' del color actual del cauce
 
+   if (tieneColor) {
+       cauce->popColor();
+   }
 }
 
 
