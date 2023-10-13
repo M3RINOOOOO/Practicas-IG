@@ -116,6 +116,15 @@ void Escena::visualizarGL( )
    //  
    // Usar 'glPolygonMode' en función del modo guardado en 'apl->modo_visu', 
    // que puede ser: puntos,lineas o relleno.
+   if(apl->modo_visu == ModosVisu::lineas){
+      glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+   }else if(apl->modo_visu == ModosVisu::puntos){
+      glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);  
+   }else if(apl->modo_visu == ModosVisu::relleno){
+      glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+   }else{
+      cout << "Error en el modo de visualización" << endl;
+   }      
    //
    // ...................
 
@@ -146,6 +155,7 @@ void Escena::visualizarGL( )
 
    // COMPLETAR: práctica 1: visualizar el objeto actual ('objeto')
 
+   objeto->visualizarGL();
 
    // Visualizar las aristas del objeto, si procede (es decir: en modo relleno, con 
    // visualización de aristas activada)
@@ -162,6 +172,10 @@ void Escena::visualizarGL( )
       // - antes de eso debemos de poner el cauce en un estado adecuado:
       //      - fijar el color a negro
       //      - fijar el modo de polígonos a modo 'lineas'
+      
+      cauce->fijarColor(0,0,0);
+      glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+      objeto->visualizarGeomGL();
       // 
       // ...........
 
@@ -300,6 +314,8 @@ Escena1::Escena1()
    //
    // Añadir sentencias 'push_back' adicionales para agregar al 
    // array 'objetos' otros objetos de la práctica 1
+   objetos.push_back(new Tetraedro());
+   objetos.push_back(new CuboColores());
    // 
    // .......
 

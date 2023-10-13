@@ -156,7 +156,7 @@ void DescrVBOAtribs::crearVBO()
 
    // 5. desactivar el buffer
    
-   glBindBuffer(GL_ARRAY_BUFFER,0)
+   glBindBuffer(GL_ARRAY_BUFFER,0);
 
    // 6. habilitar el uso de esta tabla de atributos
    
