@@ -30,7 +30,7 @@ set ( flags_compilador  "${version_cpp} ${opcs_warnings} ${opcs_primer_error}")
 set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${flags_compilador}")
 
 ## ----------------------------------------------------------------------
-## definir las listas de archivos *.cpp y *.h que se deben compilar
+## definir las listas de  *.cpp y *.h que se deben compilar
 
 file (GLOB fuentes_units      ${fuentes_alumno}/*.cpp)
 file (GLOB fuentes_headers    ${fuentes_alumno}/*.h)

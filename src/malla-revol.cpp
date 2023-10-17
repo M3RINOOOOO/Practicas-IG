@@ -55,10 +55,35 @@ void MallaRevol::inicializar
    //
    // ............................... 
 
+   // Partimos de las tablas de vértices y triángulos vacías
+   vertices = std::vector<glm::vec3>();
+   triangulos = std::vector<glm::uvec3>();
+   unsigned int m = perfil.size();
+   unsigned int n = num_copias;
 
+   // Completamos vértices
+   for(unsigned int i=0; i<n; i++){
+      for(unsigned int j=0; j<m; j++){
+         // Obtener las coordenadas del punto perfil[j] girado 2pi*i/(n-1) sobre eje Y
+         glm::vec3 q,p_j = perfil[j];
+         float c = cos(float(2*M_PI*i)/(n-1));
+         float s = sin(float(2*M_PI*i)/(n-1));
+         q[0] = c*p_j[0] + s*p_j[2];
+         q[1] = p_j[1];
+         q[2] = -s*p_j[0] + c*p_j[2];
 
+         vertices.push_back(q);
+      }
+   }
 
-
+   // Completamos triángulos
+   for (unsigned int i = 0; i < n-1; i++){
+      for (unsigned int j = 0; j < m-1; j++){
+         unsigned int k = i*m + j;
+         triangulos.push_back({k, k+m, k+m+1});
+         triangulos.push_back({k, k+m+1, k+1});
+      }
+   }
 }
 
 // -----------------------------------------------------------------------------
@@ -75,7 +100,76 @@ MallaRevolPLY::MallaRevolPLY
    // Leer los vértice del perfil desde un PLY, después llamar a 'inicializar'
    // ...........................
 
+   std::vector<glm::vec3> perfil;
+   LeerVerticesPLY(nombre_arch,perfil);
+   inicializar(perfil,nperfiles);
+}
 
+// *****************************************************************************
+// Clases derivadas de MallaRevol (práctica 2)
+
+// *****************************************************************************
+// Cilindro
+
+Cilindro::Cilindro
+(
+   const int num_verts_per,
+   const unsigned nperfiles
+)
+{
+   ponerNombre( std::string("Cilindro") );
+   
+
+   std::vector<glm::vec3> perfil;
+   
+   for(int i=0; i<num_verts_per; i++){
+      float altura = i*(1.0/(num_verts_per-1));
+      perfil.push_back(glm::vec3(1.0,altura,0.0));
+   }
+
+   inicializar(perfil,nperfiles);
+}
+
+// *****************************************************************************
+// Cono
+
+Cono::Cono
+(
+   const int num_verts_per,
+   const unsigned nperfiles
+)
+{
+   ponerNombre( std::string("Cono") );
+   
+
+   std::vector<glm::vec3> perfil;
+   
+   for(int i=0; i<num_verts_per; i++){
+      float altura = i*(1.0/(num_verts_per-1));
+      perfil.push_back(glm::vec3(1.0-altura,altura,0.0));
+   }
+
+   inicializar(perfil,nperfiles);
+}
+
+// *****************************************************************************
+// Esfera
+
+Esfera::Esfera
+(
+   const int num_verts_per,
+   const unsigned nperfiles
+)
+{
+   ponerNombre( std::string("Esfera") );
+   
+
+   std::vector<glm::vec3> perfil;
+   
+   for(int i=0; i<num_verts_per; i++){
+      perfil.push_back(glm::vec3(cos(i*(2*M_PI*1.0/(num_verts_per-1))),sin(i*(2*M_PI*1.0/(num_verts_per-1))),0.0));
+   }
+   inicializar(perfil,nperfiles);
 }
 
 
