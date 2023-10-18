@@ -179,4 +179,29 @@ class MallaPiramideL : public MallaInd
       MallaPiramideL();
 };
 
+// ---------------------------------------------------------------------
+
+class PiramideEstrellaZ : public MallaInd
+{
+   public:
+      PiramideEstrellaZ(unsigned n);
+}; 
+
+// ---------------------------------------------------------------------
+
+class RejillaY : public MallaInd
+{
+   public:
+      RejillaY(unsigned m, unsigned n);
+};
+
+// ---------------------------------------------------------------------
+
+class MallaTorre : public MallaInd
+{
+   public:
+      MallaTorre(unsigned n);
+};
+
+// ---------------------------------------------------------------------
 #endif

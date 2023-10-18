@@ -344,7 +344,10 @@ Escena2::Escena2()
    objetos.push_back( new MallaRevolPLY("peon.ply", 40) );
    objetos.push_back( new Cilindro( 8, 40 ) );
    objetos.push_back( new Cono( 8, 40 ) );
-   objetos.push_back( new Esfera( 100, 100 ) );
+   objetos.push_back( new Esfera( 50, 50 ) );
+   objetos.push_back( new PiramideEstrellaZ(8));
+   objetos.push_back( new RejillaY(8, 10));
+   objetos.push_back( new MallaTorre(5));
 }
 
 // -------------------------------------------------------------------------

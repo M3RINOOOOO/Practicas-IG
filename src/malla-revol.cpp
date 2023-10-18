@@ -128,6 +128,10 @@ Cilindro::Cilindro
    }
 
    inicializar(perfil,nperfiles);
+
+   for(int i = 0; i<vertices.size();i++){
+      col_ver.push_back({vertices.at(i).x, vertices.at(i).y, vertices.at(i).z});
+   }
 }
 
 // *****************************************************************************
@@ -150,6 +154,10 @@ Cono::Cono
    }
 
    inicializar(perfil,nperfiles);
+
+   for(int i = 0; i<vertices.size();i++){
+      col_ver.push_back({vertices.at(i).x, vertices.at(i).y, vertices.at(i).z});
+   }
 }
 
 // *****************************************************************************
@@ -170,6 +178,10 @@ Esfera::Esfera
       perfil.push_back(glm::vec3(cos(i*(2*M_PI*1.0/(num_verts_per-1))),sin(i*(2*M_PI*1.0/(num_verts_per-1))),0.0));
    }
    inicializar(perfil,nperfiles);
+
+   for(int i = 0; i<vertices.size();i++){
+      col_ver.push_back({vertices.at(i).x, vertices.at(i).y, vertices.at(i).z});
+   }
 }
 
 

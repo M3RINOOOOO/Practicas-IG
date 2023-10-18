@@ -439,7 +439,7 @@ CasaX::CasaX()
 
       } ;
 
-   for(int i = 0;i<vertices.size();i++){
+   for(int i = 1;i<vertices.size();i++){
       col_ver.push_back({vertices.at(i).x, vertices.at(i).y, vertices.at(i).z});
    }
 }
@@ -515,6 +515,98 @@ MallaPiramideL::MallaPiramideL()
    }
 }
 
+// ****************************************************************************
+// Clase 'PiramideEstrellaZ'
+
+PiramideEstrellaZ::PiramideEstrellaZ(unsigned n)
+   : MallaInd( "PiramideEstrellaZ" )
+{
+   vertices = 
+      {  
+         { 0.5, 0.5, 0.5}, //punta
+         { 0.5, 0.5, 0} //centro
+      }  ;
+
+   for(int i = 0; i < 2*n; i++){
+      if(i%2 == 0)
+         vertices.push_back({0.5 + 0.5*cos(M_PI*i/n), 0.5 + 0.5*sin(M_PI*i/n), 0});
+      else
+         vertices.push_back({0.5 + 0.25*cos(M_PI*i/n), 0.5 + 0.25*sin(M_PI*i/n), 0});
+   }
+   
+   for(int i=0; i < 2*n-1;i++){
+      triangulos.push_back({0,i+2,i+3});
+   }
+   triangulos.push_back({0,2*n+1,2});
+
+   for(int i=0; i < 2*n-1;i++){
+      triangulos.push_back({1,i+2,i+3});
+   }
+   triangulos.push_back({1,2*n+1,2});
+
+   col_ver.push_back({1, 1, 1});
+
+   for(int i = 1; i<vertices.size();i++){
+      col_ver.push_back({vertices.at(i).x, vertices.at(i).y, vertices.at(i).z});
+   }
+      
+}
+
+// ****************************************************************************
+// Clase 'RejillaY'
+
+RejillaY::RejillaY(unsigned m, unsigned n)
+   : MallaInd( "RejillaY" )
+{
+   for (int i = 0; i < m; i++){
+      for (int j = 0; j < n; j++){
+         vertices.push_back({(i*1.0)/m, 0, (j*1.0)/n});
+      }
+   }
+
+
+   for (int i = 0; i < m-1; i++){
+      for (int j = 0; j < n-1; j++){
+         triangulos.push_back({n*i+j, n*i+j+1, n*(i+1)+j+1});
+         triangulos.push_back({n*i+j, n*(i+1)+j+1, n*(i+1)+j});
+      }
+   }
+
+   
+
+   for(int i = 0; i < vertices.size(); i++){
+      col_ver.push_back({vertices.at(i).x, vertices.at(i).y, vertices.at(i).z});
+   }   
+}
+
+// ****************************************************************************
+// Clase 'MallaTorre'
+
+MallaTorre::MallaTorre(unsigned n)
+   : MallaInd( "MallaTorre" )
+{
+   for(int i = 0;i<(n+1);i++){
+      vertices.push_back({0.5,i,0.5});
+      vertices.push_back({0.5,i,-0.5});
+      vertices.push_back({-0.5,i,-0.5});
+      vertices.push_back({-0.5,i,0.5});
+   }
+
+   for(int i = 0;i<4*n;i++){
+      if(i%4==3){
+         triangulos.push_back({i,i-3,i+1});
+         triangulos.push_back({i,i+4,i+1});
+      }else{
+         triangulos.push_back({i,i+1,i+5});
+         triangulos.push_back({i,i+4,i+5});
+      }
+   }
+
+   for(int i = 0; i<vertices.size();i++){
+      col_ver.push_back({vertices.at(i).x+0.5, vertices.at(i).y/n, vertices.at(i).z+0.5});
+   }
+      
+}
 // -----------------------------------------------------------------------------------------------
 
 
