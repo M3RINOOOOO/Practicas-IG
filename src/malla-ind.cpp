@@ -400,7 +400,7 @@ EstrellaZ::EstrellaZ(unsigned n)
    col_ver.push_back({1, 1, 1});
 
    for(int i = 0; i<2*n;i++){
-      col_ver.push_back({vertices.at(i).x, vertices.at(i).y, vertices.at(i).z});
+      col_ver.push_back({vertices.at(i+1).x, vertices.at(i+1).y, vertices.at(i+1).z});
    }
 
 }
@@ -439,7 +439,7 @@ CasaX::CasaX()
 
       } ;
 
-   for(int i = 1;i<vertices.size();i++){
+   for(int i = 0;i<vertices.size();i++){
       col_ver.push_back({vertices.at(i).x, vertices.at(i).y, vertices.at(i).z});
    }
 }
