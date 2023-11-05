@@ -129,9 +129,7 @@ Cilindro::Cilindro
 
    inicializar(perfil,nperfiles);
 
-   for(int i = 0; i<vertices.size();i++){
-      col_ver.push_back({vertices.at(i).x, vertices.at(i).y, vertices.at(i).z});
-   }
+   ponerColor({0.55, 0.27, 0.07});
 }
 
 // *****************************************************************************
