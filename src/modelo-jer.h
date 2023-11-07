@@ -2,12 +2,19 @@
 #define MODELO_JER_HPP
 
 #include "grafo-escena.h"
-#include "ig-aux.h"
+
 
 class Helicoptero : public NodoGrafoEscena
 {
 public:
     Helicoptero();
+    unsigned leerNumParametros() const;
+    void actualizarEstadoParametro(const unsigned iParam, const float t_sec);
+
+protected:
+    glm::mat4 *rot_helice1 = nullptr;
+    glm::mat4 *rot_helice2 = nullptr;
+    glm::mat4 *tras_helicoptero = nullptr; 
 
 };
 
@@ -15,7 +22,7 @@ public:
 class Cuerpo : public NodoGrafoEscena
 {
 public:
-    Cuerpo();
+    Cuerpo(glm::mat4 *&movimiento);
 
 };
 
@@ -50,7 +57,7 @@ public:
 class Cola : public NodoGrafoEscena
 {
 public:
-    Cola();
+    Cola(glm::mat4 *&movimiento);
 
 };
 

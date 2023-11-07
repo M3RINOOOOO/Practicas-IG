@@ -6,18 +6,63 @@ using namespace glm;
 
 Helicoptero::Helicoptero()
 {
-    agregar(new Cuerpo());
+
+    unsigned ind = agregar(rotate(0.0f, glm::vec3( 0.0, 1.0, 0.0) ));
+    agregar(new Cuerpo(rot_helice1));
     agregar(translate( glm::vec3( 0.0, 0.0, -2) ));
-    agregar(new Cola());
+    agregar(new Cola(rot_helice2));
     agregar(scale( glm::vec3( 0.3, 0.3, 0.3) ));
     agregar(scale( glm::vec3( -1.0, 1.0, 1.0) ));
     agregar(translate( glm::vec3( -2.5, -6.75, 20) ));
     agregar(new Pata());    
     agregar(translate( glm::vec3( 5, 0, 0) ));
     agregar(new Pata());
+    tras_helicoptero = leerPtrMatriz(ind);
 }
 
-Cuerpo::Cuerpo()
+unsigned Helicoptero::leerNumParametros() const
+{
+    return 3;
+}
+
+void Helicoptero::actualizarEstadoParametro(const unsigned iParam, const float t_sec)
+{
+    assert(iParam < leerNumParametros());
+    float v;
+    switch(iParam)
+    {
+        case 0:
+            {
+                v = 2 + 2 * sin( M_PI * 0.2 * t_sec*2);
+                *tras_helicoptero = translate( glm::vec3( 0.0, v, 0.0));
+            }
+            break;
+        case 1:
+            {
+                //Para que gire en ambos sentidos
+                //v = 2 + 2 * sin( M_PI * 0.2 * t_sec*2);
+                //*rot_helice1 = rotate( float(M_PI/2) * v, glm::vec3( 0.0, 0.0, 1.0));   
+
+                //Para que gire indefinidamente         
+                *rot_helice1 = rotate( float(M_PI/2) * t_sec*5, glm::vec3( 0.0, 0.0, 1.0));
+            }
+            break;
+        case 2: 
+            {
+                //Para que gire en ambos sentidos
+                //v = 2 + 2 * sin( M_PI * 0.2 * t_sec*2);
+                //*rot_helice2 = rotate( float(M_PI/2) * v, glm::vec3( 0.0, 0.0, 1.0));   
+
+                //Para que gire indefinidamente         
+                *rot_helice2 = rotate( float(M_PI/2) * t_sec*10, glm::vec3( 0.0, 0.0, 1.0));
+            }
+            break;
+    }        
+
+
+
+}
+Cuerpo::Cuerpo(glm::mat4 *&movimiento)
 {
     agregar(new Parte_base_hel());
     agregar(scale( glm::vec3( 1.0, -1.0, 1.0) ));
@@ -29,7 +74,9 @@ Cuerpo::Cuerpo()
     agregar(translate( glm::vec3( 0.0, 2.5, 4.5) ));
     agregar(scale( glm::vec3( 3.0, 2.0, 3.0) ));
     agregar(rotate( float(M_PI/2), glm::vec3( 1.0, 0.0, 0.0) ));
+    unsigned ind = agregar(rotate(0.0f, glm::vec3( 0.0, 1.0, 0.0) ));
     agregar(new Helice());
+    movimiento = leerPtrMatriz(ind);
 }
 
 Aspa::Aspa()
@@ -60,14 +107,16 @@ Barra::Barra()
     ponerColor({1, 1, 0});
 }
 
-Cola::Cola()
+Cola::Cola(glm::mat4 *&movimiento)
 {
     agregar(new Barra());
     agregar(rotate( float(3*M_PI/2), glm::vec3( 0.0, 1.0, 0.0) ));
     agregar(translate( glm::vec3( -2, 0.5, -0.5) ));
     agregar(new Cunia_hel());
     agregar(translate ( glm::vec3( 0.35, 0.5, -0.5) ));
+    unsigned ind = agregar(rotate(0.0f, glm::vec3( 0.0, 1.0, 0.0) ));
     agregar(new Helice());
+    movimiento = leerPtrMatriz(ind);
 }
 
 Pata::Pata()
