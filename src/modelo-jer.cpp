@@ -59,8 +59,8 @@ void Helicoptero::actualizarEstadoParametro(const unsigned iParam, const float t
             break;
         case 3:
             {
-                v = 0 + 0.125 * sin( M_PI * 2 * 0.2 * t_sec);
-                *rot_cola = rotate( -float(M_PI/2) * v, glm::vec3( 0.0, 1.0, 0.0));
+                v = 0 + 0.125 * sin( M_PI * 0.2 * t_sec*2);
+                *rot_cola = rotate( float(M_PI/2) * v, glm::vec3( 0.0, 1.0, 0.0));
 
             }
     }        
@@ -108,19 +108,17 @@ Helice::Helice()
 
 Barra::Barra()
 {
-    agregar(scale( glm::vec3( 0.5, 0.5, 2) ));
+    agregar(scale( glm::vec3( 0.5, 0.5, 1) ));
     agregar(new Cubo());
     ponerColor({1, 1, 0});
 }
 
 Cola::Cola(glm::mat4 *&movimiento1,glm::mat4 *&movimiento2)
 {
-    agregar(scale( glm::vec3( 1, 1, 0.5) ));
     agregar(new Barra());
     unsigned ind2 = agregar(rotate(0.0f, glm::vec3( 0.0, 1.0, 0.0) ));
-    agregar(translate( glm::vec3( 0.0, 0.0, -3.8) ));
+    agregar(translate( glm::vec3( 0.0, 0.0, -1.8) ));
     agregar(new Barra());
-    agregar(scale( glm::vec3( 1, 1, 2) ));
     agregar(rotate( float(3*M_PI/2), glm::vec3( 0.0, 1.0, 0.0) ));
     agregar(translate( glm::vec3( -1, 0.5, -0.5) ));
     agregar(new Cunia_hel());
@@ -133,11 +131,11 @@ Cola::Cola(glm::mat4 *&movimiento1,glm::mat4 *&movimiento2)
 
 Pata::Pata()
 {
-    agregar(scale( glm::vec3( 1, 1, 4) ));
+    agregar(scale( glm::vec3( 1, 1, 6) ));
     agregar(new Barra());
-    agregar(scale( glm::vec3( 1, 0.85, 1) ));
+    agregar(scale( glm::vec3( 1, 2, 1) ));
     agregar(rotate( float(M_PI/2), glm::vec3( 1.0, 0.0, 0.0) ));
-    agregar(translate( glm::vec3( 0.0, 0.0, -2.55) ));
+    agregar(translate( glm::vec3( 0.0, 0.0, -1.25) ));
     agregar(new Barra());
     
 }
