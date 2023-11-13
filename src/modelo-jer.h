@@ -15,7 +15,7 @@ protected:
     glm::mat4 *rot_helice1 = nullptr;
     glm::mat4 *rot_helice2 = nullptr;
     glm::mat4 *tras_helicoptero = nullptr; 
-
+    glm::mat4 *rot_cola = nullptr; 
 };
 
 
@@ -57,7 +57,7 @@ public:
 class Cola : public NodoGrafoEscena
 {
 public:
-    Cola(glm::mat4 *&movimiento);
+    Cola(glm::mat4 *&movimiento1, glm::mat4 *&movimiento2);
 
 };
 

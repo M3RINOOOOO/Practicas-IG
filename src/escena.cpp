@@ -342,6 +342,9 @@ Escena2::Escena2()
    objetos.push_back( new MallaPLY("beethoven.ply") );
    objetos.push_back( new MallaPLY("big_dodge.ply") );
    objetos.push_back( new MallaPLY("ant.ply") );
+   objetos.push_back( new MallaPLY("helix.ply") );
+   objetos.push_back( new MallaPLY("tennis_shoe.ply") );
+   objetos.push_back( new MallaPLY("tommygun.ply") );
    objetos.push_back( new MallaRevolPLY("peon.ply", 40) );
    objetos.push_back( new Cilindro( 8, 40 ) );
    objetos.push_back( new Cono( 8, 40 ) );
