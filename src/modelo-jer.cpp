@@ -1,18 +1,17 @@
 #include "modelo-jer.h"
 #include "malla-ind.h"
 #include "malla-revol.h"
-
 using namespace glm;
 
 Helicoptero::Helicoptero()
 {
+    ponerNombre("Helicoptero");
     
     unsigned ind = agregar(translate(glm::vec3( 0.0, 1.0, 0.0) ));
     agregar(new Cuerpo(rot_helice1));
     agregar(translate( glm::vec3( 0.0, 0.0, -1) ));
     agregar(new Cola(rot_helice2,rot_cola));
-    agregar(scale( glm::vec3( 0.3, 0.3, 0.3) ));
-    agregar(scale( glm::vec3( -1.0, 1.0, 1.0) ));
+    agregar(scale( glm::vec3( -0.3, 0.3, 0.3) ));
     agregar(translate( glm::vec3( -2.5, -6.75, 18) ));
     agregar(new Pata());    
     agregar(translate( glm::vec3( 5, 0, 0) ));
@@ -33,7 +32,7 @@ void Helicoptero::actualizarEstadoParametro(const unsigned iParam, const float t
     {
         case 0:
             {
-                v = 2 + 2 * sin( M_PI * 0.2 * t_sec*2);
+                v = 0 + 2*sin( 2*M_PI * 0.2 * t_sec);
                 *tras_helicoptero = translate( glm::vec3( 0.0, v, 0.0));
             }
             break;
@@ -43,8 +42,9 @@ void Helicoptero::actualizarEstadoParametro(const unsigned iParam, const float t
                 //v = 2 + 2 * sin( M_PI * 0.2 * t_sec*2);
                 //*rot_helice1 = rotate( float(M_PI/2) * v, glm::vec3( 0.0, 0.0, 1.0));   
 
-                //Para que gire indefinidamente         
-                *rot_helice1 = rotate( float(M_PI/2) * t_sec*5, glm::vec3( 0.0, 0.0, 1.0));
+                //Para que gire indefinidamente      
+                v = 0 + 2*M_PI*1.225*t_sec;   
+                *rot_helice1 = rotate( v, glm::vec3( 0.0, 0.0, 1.0));
             }
             break;
         case 2: 
@@ -53,21 +53,20 @@ void Helicoptero::actualizarEstadoParametro(const unsigned iParam, const float t
                 //v = 2 + 2 * sin( M_PI * 0.2 * t_sec*2);
                 //*rot_helice2 = rotate( float(M_PI/2) * v, glm::vec3( 0.0, 0.0, 1.0));   
 
-                //Para que gire indefinidamente         
-                *rot_helice2 = rotate( float(M_PI/2) * t_sec*10, glm::vec3( 0.0, 0.0, 1.0));
+                //Para que gire indefinidamente        
+                v = 0 + 2*M_PI*2.5*t_sec;  
+                *rot_helice2 = rotate( v, glm::vec3( 0.0, 0.0, 1.0));
             }
             break;
         case 3:
             {
-                v = 0 + 0.125 * sin( M_PI * 0.2 * t_sec*2);
-                *rot_cola = rotate( float(M_PI/2) * v, glm::vec3( 0.0, 1.0, 0.0));
+                v = 0 + M_PI/5 * sin( 2*M_PI * 0.2 * t_sec);
+                *rot_cola = rotate( v, glm::vec3( 0.0, 1.0, 0.0));
 
             }
     }        
-
-
-
 }
+
 Cuerpo::Cuerpo(glm::mat4 *&movimiento)
 {
     agregar(new Parte_base_hel());

@@ -118,7 +118,46 @@ class NodoGrafoEscena : public Objeto3D
 
 // *********************************************************************
 
+class GrafoEstrellaX : public NodoGrafoEscena
+{
+   public:
+      GrafoEstrellaX(unsigned n);
+      unsigned leerNumParametros() const;
+      void actualizarEstadoParametro(const unsigned iParam, const float t_sec);
 
+   protected:
+      glm::mat4 *rot_estrella = nullptr;
+} ;
+
+class ConoEstrellaX : public NodoGrafoEscena
+{
+   public:
+      ConoEstrellaX();
+} ;
+
+// *********************************************************************
+
+class GrafoCubos : public NodoGrafoEscena
+{
+   public:
+      GrafoCubos();
+      unsigned leerNumParametros() const;
+      void actualizarEstadoParametro(const unsigned iParam, const float t_sec);
+
+   protected:
+      glm::mat4 *rot_cubo1 = nullptr;
+      glm::mat4 *rot_cubo2 = nullptr;
+      glm::mat4 *rot_cubo3 = nullptr;
+      glm::mat4 *rot_cubo4 = nullptr;
+      glm::mat4 *rot_cubo5 = nullptr;
+      glm::mat4 *rot_cubo6 = nullptr;
+} ;
+
+class CaraCubos : public NodoGrafoEscena
+{
+   public:
+      CaraCubos(glm::mat4 *&movimiento);
+} ;
 
 
 #endif // GRAFO_ESCENA_HPP

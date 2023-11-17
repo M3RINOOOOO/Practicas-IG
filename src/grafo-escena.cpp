@@ -29,7 +29,7 @@
 #include "grafo-escena.h"
 #include "aplicacion-ig.h"
 #include "seleccion.h"   // para 'ColorDesdeIdent' 
-
+#include "malla-revol.h"
 
 
 // *********************************************************************
@@ -370,11 +370,114 @@ bool NodoGrafoEscena::buscarObjeto
    return false ;
 }
 
+// *****************************************************************************
+// Clase GrafoEstrellaX
+
+GrafoEstrellaX::GrafoEstrellaX(unsigned n)
+{
+   assert(n>1);
+   ponerNombre("GrafoEstrellaX");
+
+   unsigned ind = agregar(rotate(float(M_PI),(glm::vec3( 1.0, 0.0, 0.0) )));
+   agregar(rotate(float(M_PI/2),glm::vec3(0,1,0)));
+   agregar(scale(glm::vec3(2.6,2.6,2.6)));
+   agregar(translate(glm::vec3(-0.5,-0.5,0)));
+   agregar(new EstrellaZ(n));
+
+   agregar(scale(glm::vec3(1/2.6,1/2.6,1/2.6)));
+   agregar(translate(glm::vec3(1.3,1.3,0)));
+
+   for(int i=0;i<n;i++){
+      agregar(rotate(float(2*M_PI/n),glm::vec3(0,0,1)));
+      agregar(new ConoEstrellaX());
+   }
+   
+   rot_estrella = leerPtrMatriz(ind);
+}
+
+unsigned GrafoEstrellaX::leerNumParametros() const
+{
+   return 1;
+}
+
+void GrafoEstrellaX::actualizarEstadoParametro(const unsigned iParam, const float t_sec)
+{
+   assert(iParam < leerNumParametros());
+   float v;
+   switch(iParam)
+   {
+      case 0:
+         {
+            v = 0 + 2*M_PI*2.5*t_sec;
+            *rot_estrella = rotate( v, glm::vec3( 1.0, 0.0, 0.0));
+         }
+         break;
+   }
+}
+
+ConoEstrellaX::ConoEstrellaX()
+{
+   agregar(translate(glm::vec3(0,1.3,0)));
+   agregar(scale(glm::vec3(0.14,0.15,0.14)));
+   agregar(new Cono(8,40));
+}
 
 
+// *****************************************************************************
+// Clase GrafoCubos
 
+GrafoCubos::GrafoCubos()
+{
+   ponerNombre("GrafoCubos");
+   agregar(new CaraCubos(rot_cubo1));
+   agregar(scale(glm::vec3(-1,-1,-1)));
+   agregar(new CaraCubos(rot_cubo2));
+   agregar(rotate(float(M_PI/2),glm::vec3(0,0,1)));
+   agregar(new CaraCubos(rot_cubo3));
+   agregar(rotate(float(M_PI/2),glm::vec3(1,0,0)));
+   agregar(new CaraCubos(rot_cubo4));
+   agregar(rotate(float(M_PI/2),glm::vec3(1,0,0)));
+   agregar(new CaraCubos(rot_cubo5));
+   agregar(rotate(float(M_PI/2),glm::vec3(1,0,0)));
+   agregar(new CaraCubos(rot_cubo6));
+}
 
+unsigned GrafoCubos::leerNumParametros() const
+{
+   return 1;
+}
 
+void GrafoCubos::actualizarEstadoParametro(const unsigned iParam, const float t_sec)
+{
+   assert(iParam < leerNumParametros());
+   float v;
+   switch(iParam)
+   {
+      case 0:
+         {
+            v = 0 + 2*M_PI*2.5*t_sec;
+            *rot_cubo1 = rotate( v, glm::vec3( 0.0, 1.0, 0.0));
+            *rot_cubo2 = rotate( v, glm::vec3( 0.0, 1.0, 0.0));
+            *rot_cubo3 = rotate( v, glm::vec3( 0.0, 1.0, 0.0));
+            *rot_cubo4 = rotate( v, glm::vec3( 0.0, 1.0, 0.0));
+            *rot_cubo5 = rotate( v, glm::vec3( 0.0, 1.0, 0.0));
+            *rot_cubo6 = rotate( v, glm::vec3( 0.0, 1.0, 0.0));
+         }
+         break;
+   }
+}
+
+CaraCubos::CaraCubos(glm::mat4 *&movimiento)
+{
+   agregar(translate(glm::vec3(-0.5,0.5,-0.5)));
+   agregar(new RejillaY(6,6));
+   
+   agregar(translate(glm::vec3(0.5,0.25,0.5)));
+   agregar(scale(glm::vec3(0.125,0.25,0.125)));
+   unsigned ind = agregar(rotate(0.0f,glm::vec3(0,1,0)));
+   agregar(new Cubo());
+   movimiento = leerPtrMatriz(ind);
+}
 
 
 

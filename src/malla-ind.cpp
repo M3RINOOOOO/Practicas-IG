@@ -560,7 +560,7 @@ RejillaY::RejillaY(unsigned m, unsigned n)
 {
    for (int i = 0; i < m; i++){
       for (int j = 0; j < n; j++){
-         vertices.push_back({(i*1.0)/m, 0, (j*1.0)/n});
+         vertices.push_back({(i*1.0)/(m-1), 0, (j*1.0)/(n-1)});
       }
    }
 
