@@ -203,31 +203,4 @@ class MallaTorre : public MallaInd
       MallaTorre(unsigned n);
 };
 
-// ---------------------------------------------------------------------
-// Triángulo para la hélice del helicóptero
-
-class Triangulo_hel : public MallaInd
-{
-   public:
-      Triangulo_hel();
-};
-
-// ---------------------------------------------------------------------
-// Estrucura para la base del helicóptero
-
-class Parte_base_hel : public MallaInd
-{
-   public:
-      Parte_base_hel();
-};
-
-// ---------------------------------------------------------------------
-// Cuñapara la cola del helicóptero
-
-class Cunia_hel : public MallaInd
-{
-   public:
-      Cunia_hel();
-};
-
 #endif

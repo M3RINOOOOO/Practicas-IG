@@ -61,4 +61,24 @@ public:
 
 };
 
+class Triangulo_hel : public MallaInd
+{
+   public:
+      Triangulo_hel();
+};
+
+
+class Parte_base_hel : public MallaInd
+{
+   public:
+      Parte_base_hel();
+};
+
+
+class Cunia_hel : public MallaInd
+{
+   public:
+      Cunia_hel();
+};
+
 #endif
