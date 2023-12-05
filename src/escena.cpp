@@ -377,7 +377,14 @@ Escena3::Escena3()
 // los objetos que se indican en el guion de la práctica 4
 // .......
 
-
+Escena4::Escena4()
+{
+   using namespace std ;
+   cout << "Creando objetos de la práctica 3." << endl ;
+   objetos.push_back( new Helicoptero());
+   objetos.push_back( new GrafoEstrellaX(8));
+   objetos.push_back( new GrafoCubos());
+}
 
 // ----------------------------------------------------------------------
 // COMPLETAR: práctica 5: escribir implementación del constructor de 'Escena5'.

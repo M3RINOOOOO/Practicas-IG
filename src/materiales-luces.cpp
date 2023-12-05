@@ -43,10 +43,32 @@ Textura::Textura( const std::string & nombreArchivoJPG )
    // El nombre del archivo debe ir sin el 'path', la función 'LeerArchivoJPG' lo 
    // busca en 'materiales/imgs' y si no está se busca en 'archivos-alumno'
    // .....
-
+   unsigned ancho, alto;
+   const char* nombreArchivo = nombreArchivoJPG.c_str();
+   imagen = LeerArchivoJPEG(nombreArchivo,ancho,alto); 
 }
 
 // ---------------------------------------------------------------------
+
+TexturaXY::TexturaXY(const std::string& nom)
+: Textura(nom)
+{
+   modo_gen_ct = mgct_coords_objeto;
+
+   // coefs_s = {1.0, 0.0, 0.0, 0.0};  
+   // coefs_t = {0.0, 1.0, 0.0, 0.0}; 
+}
+
+TexturaXZ::TexturaXZ(const std::string& nom)
+: Textura(nom)
+{
+   modo_gen_ct = mgct_coords_objeto;
+
+   // coefs_s = {1.0, 0.0, 0.0, 0.0};  
+   // coefs_t = {0.0, 0.0, 1.0, 0.0}; 
+   coefs_t[1] = 0.0;
+   coefs_t[2] = 1.0;
+}
 
 //----------------------------------------------------------------------
 
@@ -56,6 +78,33 @@ void Textura::enviar()
    // y configurar parámetros de la textura (glTexParameter)
    // .......
 
+   // Generamos un nuevo nombre de textura único
+   glGenTextures(1, &ident_textura);
+
+   // Cambiamos la unidad de textura activa
+   glActiveTexture(GL_TEXTURE0);
+
+   // Activamos la textura generada en la unidad activa
+   glBindTexture(GL_TEXTURE_2D, ident_textura);
+
+   // Realizamos la copia de los texels
+   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, ancho, alto, 0, GL_RGB, GL_UNSIGNED_BYTE, imagen);
+
+   // Generamos mipmaps (para resolución reducida)
+   glGenerateMipmap(GL_TEXTURE_2D);
+
+   // Hacer interpolación bilineal entre los cuatro texels con centros
+   // más cercanos al centro del pixel:
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+   // Interpolación bilineal 
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+   // Repetir la textura en ambas coordenadas.
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+   enviada = true;
 }
 
 //----------------------------------------------------------------------
@@ -82,6 +131,11 @@ void Textura::activar(  )
 
    // COMPLETAR: práctica 4: enviar la textura a la GPU (solo la primera vez) y activarla
    // .......
+   if (!enviada)
+      enviar();
+   
+   cauce->fijarEvalText(true, ident_textura);
+   cauce->fijarTipoGCT(modo_gen_ct, coefs_s, coefs_t);
 
 }
 // *********************************************************************
@@ -140,7 +194,15 @@ void Material::activar( )
 
    // COMPLETAR: práctica 4: activar un material
    // .....
+   if (textura != nullptr)
+      textura->activar();
+   else
+      cauce->fijarEvalText(false);
 
+   // Producir error en caso de valor bajo en exponente de la componente pseudo-especular.
+   assert( exp_pse <= 1 );
+
+   cauce->fijarParamsMIL(k_amb, k_dif, k_pse, exp_pse);
 }
 //**********************************************************************
 
@@ -206,6 +268,20 @@ void ColFuentesLuz::activar( )
    //   - usar el método 'fijarFuentesLuz' del cauce para activarlas
    // .....
 
+   std::vector<glm::vec3> color;
+   std::vector<glm::vec4> pos_dir_wc;
+
+   for (int i = 0; i < vpf.size(); i++)
+   {
+      color.push_back(vpf[i]->color); 
+      glm::vec4 pos_vpf = glm::vec4(cos(glm::radians(vpf[i]->lati)),
+                                   sin(glm::radians(vpf[i]->lati)) * cos(glm::radians(vpf[i]->longi)),
+                                   sin(glm::radians(vpf[i]->lati)) * sin(glm::radians(vpf[i]->longi)),
+                                   0.0);
+      pos_dir_wc.push_back(pos_vpf);
+   }
+
+   cauce->fijarFuentesLuz(color, pos_dir_wc);
 }
 
 // ---------------------------------------------------------------------
