@@ -31,6 +31,7 @@
 #include "seleccion.h"   // para 'ColorDesdeIdent' 
 #include "malla-revol.h"
 
+using namespace glm;
 
 // *********************************************************************
 // Entrada del nodo del Grafo de Escena
@@ -85,7 +86,7 @@ EntradaNGE::~EntradaNGE()
 
 NodoGrafoEscena::NodoGrafoEscena()
 {
-   
+
 }
 
 // -----------------------------------------------------------------------------
@@ -100,6 +101,9 @@ void NodoGrafoEscena::visualizarGL(  )
    Cauce *          cauce           = apl->cauce ;           assert( cauce != nullptr );
    PilaMateriales * pila_materiales = apl->pila_materiales ; assert( pila_materiales != nullptr );
 
+   if (apl->iluminacion)
+      pila_materiales->push();
+
    // COMPLETAR: práctica 3: implementar la visualización del nodo
    //
    // Se deben de recorrer las entradas y llamar recursivamente de visualizarGL, pero 
@@ -111,40 +115,48 @@ void NodoGrafoEscena::visualizarGL(  )
    // 1. Si el objeto tiene un color asignado (se comprueba con 'tieneColor')
    //     - hacer push del color actual del cauce (con 'pushColor') y después
    //     - fijar el color en el cauce (con 'fijarColor'), usando el color del objeto (se lee con 'leerColor()')
-   
+
    if(tieneColor()){
       cauce->pushColor();
       cauce->fijarColor(leerColor());
    }
-      
-   // 2. Guardar copia de la matriz de modelado (con 'pushMM'), 
 
+  
+
+   // 2. Guardar copia de la matriz de modelado (con 'pushMM'), 
    cauce->pushMM();
 
    // 3. Para cada entrada del vector de entradas:
    //     - si la entrada es de tipo objeto: llamar recursivamente a 'visualizarGL'
    //     - si la entrada es de tipo transformación: componer la matriz (con 'compMM')
-   
-   for(int i=0;i<entradas.size();i++){
-      if(entradas[i].tipo == TipoEntNGE::objeto){
-         //visualizarGL(); para hacerlo recursivo idk¿?¿?
-         entradas[i].objeto->visualizarGL();
-      }
-      else if(entradas[i].tipo == TipoEntNGE::transformacion){
-         cauce->compMM(*(entradas[i].matriz));
+    for( unsigned i = 0 ; i < entradas.size() ; i++ )
+      {
+      switch( entradas[i].tipo )
+         {
+         case TipoEntNGE::objeto : // entrada objeto:
+            entradas[i].objeto->visualizarGL();//llamar recursivamente a visualizarGL
+         break ;
+         case TipoEntNGE::transformacion : // entrada transf.:
+            cauce->compMM( *(entradas[i].matriz)); // componer matriz
+         break ;
+         case TipoEntNGE::material : // si la entrada es de tipo ’material’
+            if ( apl->iluminacion ) // y si está activada la iluminación
+            pila_materiales->activar( entradas[i].material );
+         break ;
       }
    }
-   
-   // 4. Restaurar la copia guardada de la matriz de modelado (con 'popMM')
 
+
+   // 4. Restaurar la copia guardada de la matriz de modelado (con 'popMM')
    cauce->popMM();
+   
 
    // 5. Si el objeto tiene color asignado:
    //     - restaurar el color original a la entrada (con 'popColor')
-
    if(tieneColor()){
       cauce->popColor();
    }
+
 
 
    // COMPLETAR: práctica 4: añadir gestión de los materiales cuando la iluminación está activada    
@@ -154,8 +166,9 @@ void NodoGrafoEscena::visualizarGL(  )
    //   1. al inicio, hacer 'push' de la pila de materiales (guarda material actual en la pila)
    //   2. si una entrada es de tipo material, activarlo usando a pila de materiales
    //   3. al finalizar, hacer 'pop' de la pila de materiales (restaura el material activo al inicio)
-
-   // ......
+   if (apl->iluminacion){
+      pila_materiales->pop();
+   }
 
 
 }
@@ -185,10 +198,8 @@ void NodoGrafoEscena::visualizarGeomGL(  )
 
    for(int i=0;i<entradas.size();i++){
       if(entradas[i].tipo == TipoEntNGE::objeto){
-         //visualizarGeomGL(); para hacerlo recursivo idk¿?¿?
          entradas[i].objeto->visualizarGeomGL();
-      }
-      else if(entradas[i].tipo == TipoEntNGE::transformacion){
+      }else if(entradas[i].tipo == TipoEntNGE::transformacion){
          cauce->compMM(*(entradas[i].matriz));
       }
    }
@@ -196,7 +207,7 @@ void NodoGrafoEscena::visualizarGeomGL(  )
    //   3. Restaurar la copia guardada de la matriz de modelado (con 'popMM')
 
    cauce->popMM();
-   
+
    // .......
 
 }
@@ -219,9 +230,18 @@ void NodoGrafoEscena::visualizarNormalesGL(  )
    // en cuenta estos puntos:
    //
    // - usar push/pop de la matriz de modelado al inicio/fin (al igual que en visualizatGL)
+   cauce->pushMM();
    // - recorrer las entradas, llamando recursivamente a 'visualizarNormalesGL' en los nodos u objetos hijos
+   for (int i = 0; i < entradas.size(); i++) {
+      if (entradas[i].tipo == TipoEntNGE::objeto)
+         entradas[i].objeto->visualizarNormalesGL();
+      else if (entradas[i].tipo == TipoEntNGE::transformacion)
+         cauce->compMM(*entradas[i].matriz);
+   }
    // - ignorar el color o identificador del nodo (se supone que el color ya está prefijado antes de la llamada)
    // - ignorar las entradas de tipo material, y la gestión de materiales (se usa sin iluminación)
+
+   cauce->popMM();
 
    // .......
 
@@ -264,8 +284,7 @@ unsigned NodoGrafoEscena::agregar( const EntradaNGE & entrada )
    // COMPLETAR: práctica 3: agregar la entrada al nodo, devolver índice de la entrada agregada
    // ........
    entradas.push_back(entrada);
-
-   return entradas.size()-1; 
+   return entradas.size()-1; // sustituir por lo que corresponda ....
 
 }
 // -----------------------------------------------------------------------------
@@ -302,21 +321,22 @@ glm::mat4 * NodoGrafoEscena::leerPtrMatriz( unsigned indice )
    //   - la entrada no es de tipo transformación
    //   - el puntero a la matriz es nulo 
    //
+   // Sustituir 'return nullptr' por lo que corresponda.
+   //
 
    if(indice >= entradas.size()){
-      std::cout << "Error: indice fuera de rango" << std::endl;
-      exit(0);
-   }
-   else if(entradas[indice].tipo != TipoEntNGE::transformacion){
-      std::cout << "Error: la entrada no es de tipo transformacion" << std::endl;
-      exit(0);
-   }
-   else if(entradas[indice].matriz == nullptr){
-      std::cout << "Error: el puntero a la matriz es nulo" << std::endl;
-      exit(0);
+      std::cerr << "Error: indice fuera de rango" << std::endl;
+      exit(1);
+   }else if(entradas[indice].tipo != TipoEntNGE::transformacion){
+      std::cerr << "Error: la entrada no es de tipo transformacion" << std::endl;
+      exit(1);
+   }else if(entradas[indice].matriz == nullptr){
+      std::cerr << "Error: el puntero a la matriz es nulo" << std::endl;
+      exit(1);
    }
 
    return entradas[indice].matriz;
+
 
 }
 // -----------------------------------------------------------------------------

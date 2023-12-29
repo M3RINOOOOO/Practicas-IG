@@ -42,7 +42,7 @@
 #include "materiales-luces.h"
 #include "escena.h"
 #include "modelo-jer.h"
-
+#include "latapeones.h"
 
 
 // -----------------------------------------------------------------------------------------------
@@ -58,7 +58,8 @@ Escena::Escena()
    //
    // ...
 
-
+   col_fuentes = new Col2Fuentes();
+   material_ini = new Material(0.4f, 0.8f, 0.0f, 2.0f);
    // COMPLETAR: práctica 5: añadir varias cámaras perspectiva y ortogonales al vector de cámaras de la escena
    //
    // Añadir sentencias 'push_back' para añadir varias cámaras al vector 'camaras'.
@@ -140,7 +141,11 @@ void Escena::visualizarGL( )
       // * activar la colección de fuentes de la escena
       // * activar el material inicial (usando 'pila_materiales')
       // ....
+      cauce->fijarEvalMIL(true);
 
+       col_fuentes->activar();
+      // // * activar el material inicial (usando 'pila_materiales')
+       apl->pila_materiales->activar(material_ini);
    }
    else // si la iluminación no está activada, deshabilitar MIL y texturas
    {  
@@ -245,7 +250,10 @@ void Escena::visualizarNormales(  )
    //      * Desactivar el uso de texturas (con 'fijarEvalText')
    //      * fijar el color (con 'fijarColor') 
    // 2. Visualizar las normales del objeto actual de la escena (con el método 'visualizarNormalesGL')
-
+   apl->cauce->fijarEvalMIL(false);
+   apl->cauce->fijarEvalText(false);
+   apl->cauce->fijarColor(1.0,1.0,1.0);
+   objetoActual()->visualizarNormalesGL();
    // ......
 
 }
@@ -380,10 +388,8 @@ Escena3::Escena3()
 Escena4::Escena4()
 {
    using namespace std ;
-   cout << "Creando objetos de la práctica 3." << endl ;
-   objetos.push_back( new Helicoptero());
-   objetos.push_back( new GrafoEstrellaX(8));
-   objetos.push_back( new GrafoCubos());
+   cout << "Creando objetos de la práctica 4." << endl ;
+   objetos.push_back(new LataPeones());
 }
 
 // ----------------------------------------------------------------------

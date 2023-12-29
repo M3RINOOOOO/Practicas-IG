@@ -32,7 +32,8 @@
 #include "lector-ply.h"
 #include "seleccion.h"   // para 'ColorDesdeIdent' 
 
-
+using namespace std ;
+using namespace glm ;
 // *****************************************************************************
 // funciones auxiliares
 
@@ -70,7 +71,24 @@ void MallaInd::calcularNormalesTriangulos()
 
    // COMPLETAR: Práctica 4: creación de la tabla de normales de triángulos
    // ....
+   for (int i = 0; i < nt; i++) {
+      vec3 p = vertices[triangulos[i][0]];
+      vec3 q = vertices[triangulos[i][1]];
+      vec3 r = vertices[triangulos[i][2]];
 
+      vec3 a = q - p;
+      vec3 b = r - p;
+
+      vec3 m_c = cross(a, b);
+
+      vec3 n_c;
+      if (length(m_c) != 0.0)
+         n_c = normalize(m_c);
+      else
+         n_c = vec3(0.0, 0.0, 0.0);
+
+      nor_tri.push_back(n_c);
+   }
 }
 
 
@@ -83,7 +101,21 @@ void MallaInd::calcularNormales()
    // COMPLETAR: en la práctica 4: calculo de las normales de la malla
    // se debe invocar en primer lugar 'calcularNormalesTriangulos'
    // .......
+   calcularNormalesTriangulos();
 
+   nor_ver = std::vector<vec3>(vertices.size(), vec3(0.0, 0.0, 0.0));
+
+   for (int i = 0; i < triangulos.size(); i++) {
+      for (int j = 0; j < 3; j++) {
+         unsigned indice_vertice = triangulos[i][j];
+
+         nor_ver[indice_vertice] = nor_ver[indice_vertice] + nor_tri[i];
+      }
+   }
+
+   for (int i = 0; i < nor_ver.size(); i++)
+      if (length(nor_ver[i]) != 0.0)
+         nor_ver[i] = normalize(nor_ver[i]);
 
 }
 
@@ -220,20 +252,25 @@ void MallaInd::visualizarNormalesGL(  )
    // 
    // *1* Si el puntero al descriptor de VAO de normales ('dvao_normales') es nulo, 
    //    debemos de crear dicho descriptor, con estos pasos:
+   if (dvao_normales == nullptr) {
    //
    //       * Para cada posición 'v_i' de un vértice en el vector 'vertices':
    //             - Leer la correspondiente normal 'n_i' del vector de normales ('nor_ver').
    //             - Añadir 'v_i' al vector 'segmentos_normales'.
    //             - Añadir 'v_i+a*n_i' al vector 'segmentos_normales'.
-   //
+      for (int i = 0; i < vertices.size(); i++) {
+         segmentos_normales.push_back(vertices[i]);
+         segmentos_normales.push_back(vertices[i] + (0.35f * nor_ver[i]));
+      }
    //       * Crear el objeto descriptor del VAO de normales, para ello se usa el vector 
    //          'segmentos_normales' y se tiene en cuenta que esa descriptor únicamente gestiona 
    //          una tabla de atributos de vértices (la de posiciones, ya que las otras no se 
    //          necesitan).
-   // 
+      dvao_normales = new DescrVAO(numero_atributos_cauce, new DescrVBOAtribs(ind_atrib_posiciones, segmentos_normales));
+   }
    // *2* Visualizar el VAO de normales, usando el método 'draw' del descriptor, con el 
    //       tipo de primitiva 'GL_LINES'.
-
+   dvao_normales->draw(GL_LINES);
    //  ..........
 
 }
@@ -278,7 +315,7 @@ MallaPLY::MallaPLY( const std::string & nombre_arch )
 
    // COMPLETAR: práctica 4: invocar  a 'calcularNormales' para el cálculo de normales
    // .................
-
+   calcularNormales();
 }
 
 // ****************************************************************************
