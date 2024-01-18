@@ -102,7 +102,7 @@ bool Objeto3D::cuandoClick( const glm::vec3 & centro_wc )
    // Recuperar la camara actual de la escena (puntero 'escena') con el método 'camaraActual', 
    // y hacer que apunte al punto central de este objeto (parámetro 'centro_wc'), usando 
    // el método 'mirarHacia' de esa cámara.
-   // ...
+   escena->camaraActual()->mirarHacia( centro_wc );
 
    return true ;
 }

@@ -262,15 +262,34 @@ void NodoGrafoEscena::visualizarModoSeleccionGL()
    // 
    // 2. Leer identificador (con 'leerIdentificador'), si el identificador no es -1 
    //      + Guardar una copia del color actual del cauce (con 'pushColor')
-   //      + Fijar el color del cauce de acuerdo al identificador, (usar 'ColorDesdeIdent'). 
+   //      + Fijar el color del cauce de acuerdo al identificador, (usar 'ColorDesdeIdent').
+   int ident = leerIdentificador();
+   if (ident != -1) {
+      cauce->pushColor();
+      cauce->fijarColor(ColorDesdeIdent(ident));
+   }
+
    // 3. Guardar una copia de la matriz de modelado (con 'pushMM')
+   cauce->pushMM();
+
    // 4. Recorrer la lista de nodos y procesar las entradas transformación o subobjeto:
    //      + Para las entradas subobjeto, invocar recursivamente a 'visualizarModoSeleccionGL'
    //      + Para las entradas transformación, componer la matriz (con 'compMM')
+   for (int i = 0; i < entradas.size(); i++) {
+      if (entradas[i].tipo == TipoEntNGE::objeto)
+         entradas[i].objeto->visualizarModoSeleccionGL();
+      else if (entradas[i].tipo == TipoEntNGE::transformacion)
+         cauce->compMM(*entradas[i].matriz);
+   }
+
    // 5. Restaurar la matriz de modelado original (con 'popMM')   
+   cauce->popMM();
+
    // 6. Si el identificador no es -1, restaurar el color previo del cauce (con 'popColor')
    //
    // ........
+   if (ident != -1)
+      cauce->popColor();
 
 
 }
@@ -352,6 +371,30 @@ void NodoGrafoEscena::calcularCentroOC()
    //    en coordenadas de objeto (hay que hacerlo recursivamente)
    //   (si el centro ya ha sido calculado, no volver a hacerlo)
    // ........
+   
+   if (centro_calculado)
+      return;
+   
+   int contadorCentros = 0;
+   mat4 matrizModelado(1.0f);
+   vec3 centroAcumulado = vec3(0.0, 0.0, 0.0);
+
+   for (unsigned int i = 0; i < entradas.size(); i++){
+      if (entradas[i].tipo == TipoEntNGE::transformacion){
+         matrizModelado = matrizModelado * (*entradas[i].matriz);
+      }
+      else if (entradas[i].tipo == TipoEntNGE::objeto){
+         entradas[i].objeto->calcularCentroOC();
+         centroAcumulado = centroAcumulado + vec3(matrizModelado * vec4(entradas[i].objeto->leerCentroOC(),1.0f));
+         contadorCentros++;
+      }
+   }
+
+   for (int i = 0; i < 3; i++) {
+      centroAcumulado[i] /= contadorCentros;
+   }
+   ponerCentroOC( centroAcumulado);
+   centro_calculado = true;
 
 }
 // -----------------------------------------------------------------------------
@@ -375,15 +418,30 @@ bool NodoGrafoEscena::buscarObjeto
 
    // 1. calcula el centro del objeto, (solo la primera vez)
    // ........
+   calcularCentroOC();
 
 
    // 2. si el identificador del nodo es el que se busca, ya está (terminar)
    // ........
+   if (ident_busc == leerIdentificador()) {
+      *objeto = this;
+      centro_wc = leerCentroOC();
+      return true;
+   }
 
 
    // 3. El nodo no es el buscado: buscar recursivamente en los hijos
    //    (si alguna llamada para un sub-árbol lo encuentra, terminar y devolver 'true')
    // ........
+   mat4 matrizmod = mmodelado;
+
+   for(int i=0; i<entradas.size(); i++){
+        if(entradas[i].tipo == TipoEntNGE::objeto){
+            if(entradas[i].objeto->buscarObjeto(ident_busc, matrizmod, objeto, centro_wc)) return true;
+        }
+        else if(entradas[i].tipo == TipoEntNGE::transformacion) matrizmod = matrizmod*(*entradas[i].matriz);
+   }
+
 
 
    // ni este nodo ni ningún hijo es el buscado: terminar
@@ -511,3 +569,37 @@ NodoDiscoP4::NodoDiscoP4(){
    agregar(material);
    agregar( new MallaDiscoP4() );
 }
+
+MiEsferaE1::MiEsferaE1(unsigned i, unsigned j){
+   fila = i;
+   columna = j;
+   agregar(new Esfera(20,20));
+}
+
+bool MiEsferaE1::cuandoClick(const glm::vec3 & centro_wc) {
+   std::cout << "Se ha seleccionado la esfera numero " << columna+1 << " de la fila numero " << fila+1 << std::endl;
+}
+
+GrafoEsferasP5::GrafoEsferasP5(){
+   const unsigned
+      n_filas_esferas = 8,
+      n_esferas_x_fila = 5;
+   const float
+      e = 0.4/n_esferas_x_fila;
+   
+   agregar(glm::scale(glm::vec3(e,e,e)));
+
+   for(unsigned i=0; i<n_filas_esferas; i++){
+      NodoGrafoEscena *fila_esferas = new NodoGrafoEscena();
+      for(unsigned j=0; j<n_esferas_x_fila; j++){
+         MiEsferaE1 *esfera = new MiEsferaE1(i,j);
+         esfera->ponerIdentificador(i*n_esferas_x_fila+j+1);
+         fila_esferas->agregar(glm::translate(glm::vec3(2.2,0.0,0.0)));
+         fila_esferas->agregar(esfera);
+      }
+      agregar(fila_esferas);
+      agregar(glm::translate(glm::vec3(0.0,0.0,5.0)));
+   }
+   
+}
+

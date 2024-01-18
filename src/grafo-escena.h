@@ -73,6 +73,7 @@ class NodoGrafoEscena : public Objeto3D
    protected:
    // COMPLETAR: práctica 3: definir variables y métodos privados del nodo
    std::vector<EntradaNGE>  entradas ;
+   bool centro_calculado = false ;
    // .......
 
    public:
@@ -168,6 +169,21 @@ class NodoDiscoP4 : public NodoGrafoEscena {
    public:
       NodoDiscoP4();
 };
+
+class GrafoEsferasP5 : public NodoGrafoEscena {
+   public:
+      GrafoEsferasP5();
+};
+
+class MiEsferaE1 : public NodoGrafoEscena {
+   public:
+      MiEsferaE1(unsigned i, unsigned j);
+      bool cuandoClick(const glm::vec3 & centro_wc) override;
+   protected:
+      unsigned fila = 0;
+      unsigned columna = 0;
+};
+
 #endif // GRAFO_ESCENA_HPP
 
 

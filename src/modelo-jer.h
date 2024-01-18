@@ -36,7 +36,7 @@ public:
 class Helice : public NodoGrafoEscena
 {
 public:
-    Helice();
+    Helice(int n);
 
 };
 
@@ -50,7 +50,7 @@ public:
 class Pata : public NodoGrafoEscena
 {
 public:
-    Pata();
+    Pata(int n);
 
 };
 

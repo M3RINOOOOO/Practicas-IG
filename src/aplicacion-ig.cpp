@@ -98,7 +98,7 @@ AplicacionIG::AplicacionIG()
    // hacer 'push_back' en el vector de escenas de una instancia de 'Escena5'
    // ......
 
-
+   escenas.push_back( new Escena5() );
 
 
    cout << "Objetos creados." << endl ;

@@ -2,20 +2,20 @@
 #include "malla-ind.h"
 #include "malla-revol.h"
 using namespace glm;
+using namespace std;
 
 Helicoptero::Helicoptero()
 {
     ponerNombre("Helicoptero");
-    
     unsigned ind = agregar(translate(glm::vec3( 0.0, 1.0, 0.0) ));
     agregar(new Cuerpo(rot_helice1));
     agregar(translate( glm::vec3( 0.0, 0.0, -1) ));
     agregar(new Cola(rot_helice2,rot_cola));
     agregar(scale( glm::vec3( -0.3, 0.3, 0.3) ));
     agregar(translate( glm::vec3( -2.5, -6.75, 18) ));
-    agregar(new Pata());    
+    agregar(new Pata(3));    
     agregar(translate( glm::vec3( 5, 0, 0) ));
-    agregar(new Pata());
+    agregar(new Pata(4));
     tras_helicoptero = leerPtrMatriz(ind);
 }
 
@@ -69,6 +69,8 @@ void Helicoptero::actualizarEstadoParametro(const unsigned iParam, const float t
 
 Cuerpo::Cuerpo(glm::mat4 *&movimiento)
 {
+    ponerNombre("Cuerpo");
+    ponerIdentificador(1);
     agregar(new Nodo_base_hel());
     agregar(scale( glm::vec3( 1.0, -1.0, 1.0) ));
     agregar(new Nodo_base_hel());
@@ -80,7 +82,7 @@ Cuerpo::Cuerpo(glm::mat4 *&movimiento)
     agregar(scale( glm::vec3( 3.0, 2.0, 3.0) ));
     agregar(rotate( float(M_PI/2), glm::vec3( 1.0, 0.0, 0.0) ));
     unsigned ind = agregar(rotate(0.0f, glm::vec3( 0.0, 1.0, 0.0) ));
-    agregar(new Helice());
+    agregar(new Helice(5));
     movimiento = leerPtrMatriz(ind);
 }
 
@@ -91,8 +93,10 @@ Aspa::Aspa()
     agregar(new Triangulo_hel());
 }
 
-Helice::Helice()
+Helice::Helice(int n)
 {
+    ponerNombre("Helice "+to_string(n));
+    ponerIdentificador(n);
     agregar(new Aspa());
     agregar(rotate( float(M_PI/2), glm::vec3( 0.0, 0.0, 1.0) ));
     agregar(new Aspa());
@@ -115,6 +119,8 @@ Barra::Barra()
 
 Cola::Cola(glm::mat4 *&movimiento1,glm::mat4 *&movimiento2)
 {
+    ponerNombre("Cola");
+    ponerIdentificador(2);
     agregar(new Barra());
     unsigned ind2 = agregar(rotate(0.0f, glm::vec3( 0.0, 1.0, 0.0) ));
     agregar(translate( glm::vec3( 0.0, 0.0, -1.8) ));
@@ -124,13 +130,15 @@ Cola::Cola(glm::mat4 *&movimiento1,glm::mat4 *&movimiento2)
     agregar(new Nodo_cunia());
     agregar(translate ( glm::vec3( 0.35, 0.5, -0.5) ));
     unsigned ind1 = agregar(rotate(0.0f, glm::vec3( 0.0, 1.0, 0.0) ));
-    agregar(new Helice());
+    agregar(new Helice(6));
     movimiento1 = leerPtrMatriz(ind1);
     movimiento2 = leerPtrMatriz(ind2);
 }
 
-Pata::Pata()
+Pata::Pata(int n)
 {
+    ponerNombre("Pata "+to_string(n));
+    ponerIdentificador(n);
     agregar(scale( glm::vec3( 1, 1, 6) ));
     agregar(new Barra());
     agregar(scale( glm::vec3( 1, 2, 1) ));
