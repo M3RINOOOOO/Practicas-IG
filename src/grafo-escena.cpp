@@ -499,5 +499,15 @@ CaraCubos::CaraCubos(glm::mat4 *&movimiento)
    movimiento = leerPtrMatriz(ind);
 }
 
+NodoCubo24::NodoCubo24(){
+   agregar( new Material( new Textura("window-icon.jpg") , 0.5, 0.3, 0.7, 100.0) );
+   agregar( new Cubo24() );
+}
 
-
+NodoDiscoP4::NodoDiscoP4(){
+   Textura *textura = new Textura("cuadricula.jpg");
+   Material *material = new Material(textura, 0.5, 0.8, 0.2, 100.0);
+   ponerNombre("Nodo ejercicio adicional práctica 4, examen 27 enero");
+   agregar(material);
+   agregar( new MallaDiscoP4() );
+}

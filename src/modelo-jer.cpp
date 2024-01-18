@@ -69,13 +69,13 @@ void Helicoptero::actualizarEstadoParametro(const unsigned iParam, const float t
 
 Cuerpo::Cuerpo(glm::mat4 *&movimiento)
 {
-    agregar(new Parte_base_hel());
+    agregar(new Nodo_base_hel());
     agregar(scale( glm::vec3( 1.0, -1.0, 1.0) ));
-    agregar(new Parte_base_hel());
+    agregar(new Nodo_base_hel());
     agregar(scale( glm::vec3( -1.0, 1.0, 1.0) ));
-    agregar(new Parte_base_hel());
+    agregar(new Nodo_base_hel());
     agregar(scale( glm::vec3( 1.0, -1.0, 1.0) ));
-    agregar(new Parte_base_hel());
+    agregar(new Nodo_base_hel());
     agregar(translate( glm::vec3( 0.0, 2.5, 4.5) ));
     agregar(scale( glm::vec3( 3.0, 2.0, 3.0) ));
     agregar(rotate( float(M_PI/2), glm::vec3( 1.0, 0.0, 0.0) ));
@@ -85,7 +85,7 @@ Cuerpo::Cuerpo(glm::mat4 *&movimiento)
 }
 
 Aspa::Aspa()
-{
+{     
     agregar(new Triangulo_hel());
     agregar(scale( glm::vec3( 1.0, -1.0, 1.0) ));
     agregar(new Triangulo_hel());
@@ -108,8 +108,9 @@ Helice::Helice()
 Barra::Barra()
 {
     agregar(scale( glm::vec3( 0.5, 0.5, 1) ));
-    agregar(new Cubo());
-    ponerColor({1, 1, 0});
+    Material* materialBarra = new Material( new Textura("camuflaje2.jpg") , 0.5, 0.3, 0.7, 100.0);
+    agregar(materialBarra);
+    agregar(new Cubo24());
 }
 
 Cola::Cola(glm::mat4 *&movimiento1,glm::mat4 *&movimiento2)
@@ -120,7 +121,7 @@ Cola::Cola(glm::mat4 *&movimiento1,glm::mat4 *&movimiento2)
     agregar(new Barra());
     agregar(rotate( float(3*M_PI/2), glm::vec3( 0.0, 1.0, 0.0) ));
     agregar(translate( glm::vec3( -1, 0.5, -0.5) ));
-    agregar(new Cunia_hel());
+    agregar(new Nodo_cunia());
     agregar(translate ( glm::vec3( 0.35, 0.5, -0.5) ));
     unsigned ind1 = agregar(rotate(0.0f, glm::vec3( 0.0, 1.0, 0.0) ));
     agregar(new Helice());
@@ -151,7 +152,8 @@ Triangulo_hel::Triangulo_hel()
       {
          { 0, 1, 2 }
       } ;
-   ponerColor({0, 0, 0});
+   ponerColor({1, 1, 1});
+   calcularNormales();
 }
 
 Parte_base_hel::Parte_base_hel()
@@ -180,8 +182,8 @@ Parte_base_hel::Parte_base_hel()
          { 4, 5, 8 }, // cara 6
          { 6, 7, 9 }, // cara 7
       } ;
-   //Pongo el color a rojo   
-   ponerColor({0.6, 0, 0});
+   calcularNormales();
+
 }
 
 Cunia_hel::Cunia_hel()
@@ -209,5 +211,20 @@ Cunia_hel::Cunia_hel()
       } ;
    
    ponerColor({0.5, 0.8, 1.0});
+   calcularNormales();
+}
+
+Nodo_cunia::Nodo_cunia()
+{
+    Material* materialCunia = new Material( 0.5, 0.3, 0.9, 50.0);
+    agregar(materialCunia);
+    agregar(new Cunia_hel());
+}
+
+Nodo_base_hel::Nodo_base_hel()
+{
+    Material* materialBase = new Material( new TexturaXZ("camuflaje.jpg") , 0.5, 0.3, 0.7, 40.0);
+    agregar(materialBase);
+    agregar(new Parte_base_hel());
 }
 // -----------------------------------------------------------------------------------------------

@@ -159,7 +159,15 @@ class CaraCubos : public NodoGrafoEscena
       CaraCubos(glm::mat4 *&movimiento);
 } ;
 
+class NodoCubo24 : public NodoGrafoEscena {
+   public:
+      NodoCubo24();
+};
 
+class NodoDiscoP4 : public NodoGrafoEscena {
+   public:
+      NodoDiscoP4();
+};
 #endif // GRAFO_ESCENA_HPP
 
 

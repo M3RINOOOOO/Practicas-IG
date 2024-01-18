@@ -81,4 +81,18 @@ class Cunia_hel : public MallaInd
       Cunia_hel();
 };
 
+class Nodo_cunia : public NodoGrafoEscena
+{
+    public:
+    Nodo_cunia();
+
+};
+
+class Nodo_base_hel : public NodoGrafoEscena
+{
+    public:
+    Nodo_base_hel();
+
+};
+
 #endif
